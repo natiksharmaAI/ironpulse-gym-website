@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTestimonialsSlider();
   initFaqAccordion();
   initFormsAndModals();
+  initFacilityModals();
   initScrollReveal();
   initBackToTop();
   initWhatsAppWidget();
@@ -956,3 +957,413 @@ function initWhatsAppWidget() {
     }, 600);
   });
 }
+
+/* ==========================================================================
+   14. INTERACTIVE FACILITY DETAIL MODAL & ZONE EXPLORER
+   ========================================================================== */
+const facilityData = [
+  {
+    id: 'strength',
+    title: 'Strength Floor',
+    category: 'Heavy Iron & Power',
+    icon: 'fa-solid fa-dumbbell',
+    status: 'All Access Zone',
+    tagline: 'Championship-grade Eleiko bars, 6 power racks, and dumbbells to 150 lbs.',
+    image: 'assets/images/facility_strength.jpg',
+    altImage: 'assets/images/facility_deadlift_focus.jpg',
+    altImageCaption: 'Coached Deadlift Platform',
+    desc: 'Spanning over 4,500 square feet, our Strength Floor is engineered for serious lifters, powerlifters, and athletes. Every barbell is competition calibrated, power cages feature heavy-duty spotter straps and chin-up bars, and deadlift platforms absorb maximum impact while preserving bar whip. No waiting around—we maintain multiple identical racks and dumbbells paired up to 150 lbs.',
+    specs: [
+      '6x Rogue Monster Series Power Cages with band pegs & spotter straps',
+      'Eleiko IPF-certified calibrated barbells & 3,000+ kg competition bumper plates',
+      'Dumbbells from 5 lbs up to 150 lbs with ergonomic knurled urethane grips',
+      '3x Hardwood Olympic deadlift platforms with calibrated competition chalk bowls',
+      '12x Adjustable incline, flat, and decline heavy-duty competition benches',
+      'Full Hammer Strength plate-loaded iso-lateral machine circuit'
+    ],
+    highlights: [
+      'Chalk Allowed & Provided',
+      '1-Inch Shockproof Rubber Floors',
+      'High-CFM Clean Air Ventilation',
+      'Open 24/7 for Elite Members'
+    ],
+    hours: 'Mon–Fri 5:00 AM – 11:00 PM • Sat 6:00 AM – 9:00 PM • Sun 7:00 AM – 6:00 PM',
+    access: 'Included in Starter, Pulse & Elite Memberships (24/7 with Elite)',
+    idealFor: ['Powerlifting', 'Bodybuilding', 'Athletic Strength', 'Hypertrophy'],
+    plan: 'Pulse Plan ($49/mo)'
+  },
+  {
+    id: 'cardio',
+    title: 'Cardio Zone',
+    category: 'Endurance & Stamina',
+    icon: 'fa-solid fa-person-running',
+    status: 'Open Floor • All Hours',
+    tagline: 'High-cadence stamina conditioning with panoramic skyline windows and telemetry tracking.',
+    image: 'assets/images/facility_cardio.jpg',
+    altImage: 'assets/images/hero.jpg',
+    altImageCaption: 'High-Capacity Training Deck',
+    desc: 'Positioned alongside our expansive skyline windows, the Cardio Zone combines elite aerobic equipment with motivating natural light. Featuring self-powered Woodway curved treadmills that recruit up to 30% more muscle fibers than standard motorized decks, Concept2 rowers, SkiErgs, and commercial stair climbers. Every station connects seamlessly with Apple Watch, Garmin, and Bluetooth heart-rate monitors.',
+    specs: [
+      '8x Woodway Curve self-powered non-motorized treadmills',
+      '6x Concept2 Model D Rowers with PM5 wireless performance monitors',
+      '4x Concept2 SkiErgs for upper-body conditioning & lactate threshold work',
+      '8x Assault Fitness AirBikes for high-intensity sprint intervals',
+      '4x Matrix commercial ClimbMills with personal cooling fans and device docks',
+      'Bluetooth & ANT+ wireless heart-rate telemetry integration across all consoles'
+    ],
+    highlights: [
+      'Panoramic Skyline Windows',
+      'Personal Console Fans & USB Chargers',
+      'Touchless Electrolyte Water Stations',
+      'Heart-Rate Zone Sync'
+    ],
+    hours: 'Open during all club operating hours',
+    access: 'Included in all membership tiers',
+    idealFor: ['Marathon & HYROX Prep', 'Fat Burning', 'Cardiovascular Stamina', 'Low-Impact Aerobics'],
+    plan: 'Starter Plan ($29/mo)'
+  },
+  {
+    id: 'turf',
+    title: 'Functional Athletic Turf',
+    category: 'Athletics & Agility',
+    icon: 'fa-solid fa-stopwatch-20',
+    status: 'Open Floor Outside Classes',
+    tagline: '30-meter continuous indoor turf for sprint conditioning and heavy sled work.',
+    image: 'assets/images/facility_turf.jpg',
+    altImage: 'assets/images/facility_boxing_zone.jpg',
+    altImageCaption: 'Boxing & Sled Arena',
+    desc: 'Our 30-meter high-density turf strip is designed for real athletic movement. Whether you are pushing heavy prowler sleds, generating explosive force with battle ropes, or testing agility with sprint cones, this area eliminates machine restrictions and lets you train for power, speed, and real-world durability.',
+    specs: [
+      '30-meter seamless heavy-duty athletic turf marked every 5 yards',
+      '3x Heavy Rogue Dog Sleds & prowlers with low and high handles',
+      '50-foot thick braided battle ropes (1.5" and 2" diameters)',
+      'Full kettlebell rack from 8 kg (18 lbs) up to 48 kg (106 lbs)',
+      'Soft-sided non-slip plyometric jump boxes (20", 24", 30" heights)',
+      'Heavy slam balls & reinforced concrete cinder wall for rotational slams'
+    ],
+    highlights: [
+      'Programmable Wall Interval Timers',
+      'Unobstructed Deceleration Space',
+      'Agility Hurdles & Sprint Parachutes',
+      'Open Floor Between Team Classes'
+    ],
+    hours: 'All Club Open Hours (Class priority during scheduled turf sessions)',
+    access: 'Included in Starter, Pulse & Elite Memberships',
+    idealFor: ['Speed & Acceleration', 'Rotational Power', 'HYROX & Cross-Training', 'Metabolic Conditioning'],
+    plan: 'Pulse Plan ($49/mo)'
+  },
+  {
+    id: 'classes',
+    title: 'Group Fitness Studio',
+    category: 'Community & Energy',
+    icon: 'fa-solid fa-users-line',
+    status: 'Coach-Led Sessions',
+    tagline: 'Over 25 coach-guided group classes weekly with concert sound and club lighting.',
+    image: 'assets/images/facility_group_class.jpg',
+    altImage: 'assets/images/facility_yoga_studio.jpg',
+    altImageCaption: 'Mind-Body Yoga Sanctuary',
+    desc: 'Step into an immersive, community-driven studio experience. Our coach-led sessions range from heart-pumping HIIT Blast and Rhythm Spin Cycle to restorative Yoga Flow and Boxing Fit. Featuring a joint-cushioning spring floor, concert Martin Audio acoustics, and instructor-controlled atmospheric lighting to keep motivation sky-high.',
+    specs: [
+      'Joint-friendly floating acoustic hardwood studio subfloor',
+      'Martin Audio high-fidelity sound system with sub-bass tuning',
+      'Tempo-responsive ambient color lighting rigs',
+      '25+ weekly sessions included with Pulse and Elite memberships',
+      'Individual equipment cubbies sanitized after each session',
+      '24-member class cap for personalized instructor form corrections'
+    ],
+    highlights: [
+      'Real-Time Heart-Rate Wall Display',
+      'Complimentary Fresh Sweat Towels',
+      'One-Click Mobile Class Booking',
+      'Beginner to Advanced Scalability'
+    ],
+    hours: 'Morning, Noon, and Evening sessions Monday through Saturday',
+    access: 'Unlimited on Pulse & Elite (Drop-in passes available for Starter)',
+    idealFor: ['Accountability', 'High-Energy Cardio', 'Flexibility & Flow', 'Total Body Sculpting'],
+    plan: 'Pulse Plan ($49/mo)'
+  },
+  {
+    id: 'pt',
+    title: 'Personal Training Pods',
+    category: '1-on-1 Coaching',
+    icon: 'fa-solid fa-user-check',
+    status: 'Certified Coaches On-Site',
+    tagline: 'Private coaching pods, biomechanical motion analysis, and periodized blueprints.',
+    image: 'assets/images/facility_deadlift_focus.jpg',
+    altImage: 'assets/images/trainer_marcus.jpg',
+    altImageCaption: 'Head Strength Coach Marcus',
+    desc: 'Fast-track your personal fitness milestones with IronPulse Master Coaches. We combine clinical biomechanical screening, 3D motion-capture bar path analysis, and periodized nutritional programming tailored to your unique anatomy. Sessions occur in dedicated semi-private pods away from general floor traffic.',
+    specs: [
+      'Dedicated semi-private coaching pods equipped with private cages & platforms',
+      'High-speed 3D motion analysis & bar velocity feedback cameras',
+      'Comprehensive FMS functional movement baseline assessment',
+      'Periodized programming delivered directly via IronPulse mobile app',
+      'Master Coaches holding CSCS, NASM-CPT, and USA Weightlifting credentials',
+      'Private 1:1 and semi-private 2:1 coaching formats available'
+    ],
+    highlights: [
+      'Monthly InBody 570 Scans Included',
+      'Direct WhatsApp & In-App Coach Access',
+      'Dedicated Warm-Up & Mobility Zone',
+      'Custom Macro & Nutrition Blueprints'
+    ],
+    hours: 'Bookable with your coach 6:00 AM – 9:00 PM Daily',
+    access: 'Included with Elite Plan or standalone coaching packs',
+    idealFor: ['Beginner Guidance', 'Breaking Strength Plateaus', 'Post-Rehab Conditioning', 'Competitive Lifters'],
+    plan: 'Elite Plan ($89/mo)'
+  },
+  {
+    id: 'recovery',
+    title: 'Nordic Recovery Lounge',
+    category: 'Restoration & Wellness',
+    icon: 'fa-solid fa-hot-tub-person',
+    status: 'Luxury Recovery Suite',
+    tagline: 'Scandinavian cedar sauna, eucalyptus steam, cold plunge, and Theraguns.',
+    image: 'assets/images/facility_recovery_sauna.jpg',
+    altImage: 'assets/images/facility_locker_room.jpg',
+    altImageCaption: 'Spa Dressing Suites',
+    desc: 'True athletic performance is built in recovery. Our Nordic Recovery Lounge features contrast therapy to slash inflammation, flush metabolic waste, and stimulate parasympathetic relaxation. Move between our 190°F Finnish cedar sauna, cold plunge tubs cooled to 48°F, eucalyptus steam room, and Theragun massage percussive stations.',
+    specs: [
+      'Authentic Finnish Scandinavian cedar sauna (heats up to 190°F / 88°C)',
+      'Herbal eucalyptus aromatherapy steam room with continuous vapor',
+      'Dual continuous-chilled cold plunge tubs maintained at 48°F / 9°C',
+      '4x Commercial Theragun PRO massage stations with sanitation wipes',
+      'Normatec 3 dynamic pneumatic leg compression boots',
+      'Zero-gravity heated lounge recliners with ambient acoustic soundscapes'
+    ],
+    highlights: [
+      'Chilled Eucalyptus Towels on Ice',
+      'Infused Alkaline Mineral Hydration Bar',
+      'Strict Quiet Relaxation Policy',
+      'Private Rinse Showers Adjacent'
+    ],
+    hours: 'Mon–Fri 6:00 AM – 10:30 PM • Sat–Sun 7:00 AM – 8:00 PM',
+    access: 'Unlimited with Pulse & Elite memberships',
+    idealFor: ['Muscle Soreness Relief', 'Contrast Therapy', 'Immune System Boost', 'Deep Sleep Optimization'],
+    plan: 'Pulse Plan ($49/mo)'
+  },
+  {
+    id: 'nutrition',
+    title: 'Nutrition & Smoothie Bar',
+    category: 'Fuel & Dietetics',
+    icon: 'fa-solid fa-apple-whole',
+    status: 'Whole Food Fuel Bar',
+    tagline: 'Clinical InBody 570 body scans, certified diet plans, and clean fuel shakes.',
+    image: 'assets/images/facility_smoothie_bar.jpg',
+    altImage: 'assets/images/trainer_priya.jpg',
+    altImageCaption: 'Nutrition Coach Priya',
+    desc: 'Training breaks down muscle—nutrition builds it back stronger. At our on-site fuel bar and nutrition consulting suite, certified sports nutritionists analyze your body composition with clinical InBody 570 scans and provide practical, delicious meal strategies. Refuel immediately after your session with zero-sugar, grass-fed protein smoothies.',
+    specs: [
+      'Clinical InBody 570 medical multi-frequency body composition analyzer',
+      'Direct consultation with registered sports nutritionists',
+      'Personalized daily caloric, macro, and hydration targets',
+      'Over 14 handcrafted artisan protein smoothies with organic ingredients',
+      'Grass-fed whey isolate, micellar casein, and organic plant proteins',
+      'Grab-and-go vacuum-sealed macro meal prep from local culinary partners'
+    ],
+    highlights: [
+      'Zero Artificial Syrups or Fillers',
+      'Free InBody Scan with Pulse & Elite Plans',
+      'Cold Brew & Organic Espresso Available',
+      'Pre-Workout & BCAA Drink Dispensers'
+    ],
+    hours: 'Mon–Fri 6:30 AM – 8:30 PM • Sat 7:30 AM – 4:00 PM',
+    access: 'Open to all members and public guests',
+    idealFor: ['Lean Muscle Hypertrophy', 'Healthy Fat Loss', 'Athletic Energy & Recovery', 'Lifestyle Health'],
+    plan: 'Pulse Plan ($49/mo)'
+  },
+  {
+    id: 'extras',
+    title: 'Executive Member Suites',
+    category: 'Comfort & Luxury',
+    icon: 'fa-solid fa-shower',
+    status: 'Executive Locker Suites',
+    tagline: 'Walnut keypad lockers, rainfall showers, Malin+Goetz apothecary, and fiber Wi-Fi.',
+    image: 'assets/images/facility_locker_room.jpg',
+    altImage: 'assets/images/facility_reception.jpg',
+    altImageCaption: 'Welcome Lounge & Desk',
+    desc: 'Designed for effortless transitions between hard training and your busy workday. Our executive locker suites provide the quiet luxury of a boutique hotel: electronic keypad lockers, private rainfall showers, plush Turkish cotton towels, and Malin+Goetz grooming essentials. Unwind before or after your workout in our co-working member lounge.',
+    specs: [
+      '120+ dark walnut lockers with individual digital electronic keypad locks',
+      '12x private high-pressure rainfall shower suites with frosted glass doors',
+      'Complimentary luxury Malin+Goetz shampoo, conditioner, and body wash',
+      'Dyson Supersonic hair styling stations and illuminated grooming mirrors',
+      'Plush 100% Turkish cotton shower towels and gym sweat towels',
+      'Private co-working lounge with gigabit fiber Wi-Fi & laptop charging desks',
+      'Private gated 85-vehicle parking lot with security cameras free for members'
+    ],
+    highlights: [
+      'Keyless RFID Wristband & Phone Entry',
+      'Overnight Locker & Laundry Service (Elite Tier)',
+      'Chilled Bottled Water & Espresso Bar',
+      'Private Dressing Stalls'
+    ],
+    hours: 'Accessible during all club operating hours',
+    access: 'Included with all memberships',
+    idealFor: ['Pre-Work Morning Lifters', 'Lunch Break Warriors', 'Remote Professionals', 'All Members'],
+    plan: 'Pulse Plan ($49/mo)'
+  }
+];
+
+let currentFacilityIndex = 0;
+
+function updateFacilityModal(index) {
+  currentFacilityIndex = (index + facilityData.length) % facilityData.length;
+  const f = facilityData[currentFacilityIndex];
+  if (!f) return;
+
+  const modalImg = document.getElementById('facilityModalImage');
+  const modalBadge = document.getElementById('facilityModalBadge');
+  const modalCounter = document.getElementById('facilityModalCounter');
+  const modalIcon = document.getElementById('facilityModalIcon');
+  const modalTitle = document.getElementById('facilityModalTitle');
+  const modalTagline = document.getElementById('facilityModalTagline');
+  const modalStatus = document.getElementById('facilityModalStatus');
+  const modalDesc = document.getElementById('facilityModalDesc');
+  const modalSpecs = document.getElementById('facilityModalSpecs');
+  const modalHighlights = document.getElementById('facilityModalHighlights');
+  const modalAltImg = document.getElementById('facilityModalAltImage');
+  const modalAltCaption = document.getElementById('facilityModalAltCaption');
+  const modalHours = document.getElementById('facilityModalHours');
+  const modalAccess = document.getElementById('facilityModalAccess');
+  const modalIdeal = document.getElementById('facilityModalIdeal');
+  const trialBtn = document.getElementById('facilityBookTrialBtn');
+
+  if (modalImg) {
+    modalImg.src = f.image;
+    modalImg.alt = f.title + ' at IronPulse';
+  }
+  if (modalBadge) modalBadge.textContent = f.category;
+  if (modalCounter) modalCounter.textContent = `Amenity ${currentFacilityIndex + 1} of ${facilityData.length}`;
+  if (modalIcon) modalIcon.innerHTML = `<i class="${f.icon}"></i>`;
+  if (modalTitle) modalTitle.textContent = f.title;
+  if (modalTagline) modalTagline.textContent = f.tagline;
+  if (modalStatus) modalStatus.textContent = f.status;
+  if (modalDesc) modalDesc.textContent = f.desc;
+
+  if (modalSpecs) {
+    modalSpecs.innerHTML = f.specs.map(spec => `
+      <div class="facility-spec-card">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>${spec}</span>
+      </div>
+    `).join('');
+  }
+
+  if (modalHighlights) {
+    modalHighlights.innerHTML = f.highlights.map(hl => `
+      <span class="facility-highlight-chip">
+        <i class="fa-solid fa-star"></i>
+        <span>${hl}</span>
+      </span>
+    `).join('');
+  }
+
+  if (modalAltImg) {
+    modalAltImg.src = f.altImage;
+    modalAltImg.alt = f.altImageCaption;
+  }
+  if (modalAltCaption) modalAltCaption.textContent = f.altImageCaption;
+  if (modalHours) modalHours.textContent = f.hours;
+  if (modalAccess) modalAccess.textContent = f.access;
+
+  if (modalIdeal) {
+    modalIdeal.innerHTML = f.idealFor.map(tag => `
+      <span class="facility-ideal-tag">${tag}</span>
+    `).join('');
+  }
+
+  if (trialBtn) {
+    trialBtn.setAttribute('data-plan', f.plan);
+    trialBtn.setAttribute('data-facility', f.title);
+  }
+
+  // Scroll body back to top on switch
+  const modalBody = document.querySelector('.facility-modal-body');
+  if (modalBody) modalBody.scrollTop = 0;
+}
+
+function initFacilityModals() {
+  const cards = document.querySelectorAll('.facility-card[data-facility]');
+  if (!cards.length) return;
+
+  cards.forEach(card => {
+    const openCard = () => {
+      const facId = card.getAttribute('data-facility');
+      const idx = facilityData.findIndex(f => f.id === facId);
+      if (idx !== -1) {
+        updateFacilityModal(idx);
+        openModal('facilityDetailModal');
+      }
+    };
+
+    // Click event
+    card.addEventListener('click', openCard);
+
+    // Keyboard accessibility (Enter or Space)
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openCard();
+      }
+    });
+  });
+
+  // Previous & Next navigation buttons
+  const prevBtn = document.getElementById('facilityPrevBtn');
+  const nextBtn = document.getElementById('facilityNextBtn');
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      updateFacilityModal(currentFacilityIndex - 1);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      updateFacilityModal(currentFacilityIndex + 1);
+    });
+  }
+
+  // Keyboard navigation when modal is open (ArrowLeft / ArrowRight)
+  document.addEventListener('keydown', (e) => {
+    const modal = document.getElementById('facilityDetailModal');
+    if (!modal || !modal.classList.contains('open')) return;
+
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      updateFacilityModal(currentFacilityIndex - 1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      updateFacilityModal(currentFacilityIndex + 1);
+    }
+  });
+
+  // Modal close buttons
+  const closeBtn = document.getElementById('facilityModalClose');
+  const closeBottomBtn = document.getElementById('facilityModalCloseBottom');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => closeModal('facilityDetailModal'));
+  }
+  if (closeBottomBtn) {
+    closeBottomBtn.addEventListener('click', () => closeModal('facilityDetailModal'));
+  }
+
+  // "Claim Free Pass" inside facility modal
+  const trialBtn = document.getElementById('facilityBookTrialBtn');
+  if (trialBtn) {
+    trialBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const plan = trialBtn.getAttribute('data-plan') || 'Pulse Plan ($49/mo)';
+      closeModal('facilityDetailModal');
+      setTimeout(() => {
+        const select = document.getElementById('trialPlanSelect');
+        if (select) select.value = plan;
+        openModal('trialModal');
+      }, 150);
+    });
+  }
+}
+
